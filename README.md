@@ -1,10 +1,10 @@
-# DriveThruDES 🚗💨
+# DriveThruDES
 
 `DriveThruDES` is a research-calibrated, interactive **Discrete Event Simulation (DES)** that models, analyzes, and visualizes fast-food drive-thru operations. It is designed to identify operational bottlenecks and evaluate optimization strategies (e.g., adding ordering stations, increasing kitchen capacity, or adjusting service rates).
 
 ---
 
-## 📊 Research-Calibrated Baseline
+##  Research-Calibrated Baseline
 
 The simulation parameters are calibrated against a real-world time study conducted across fast-food restaurants in Metro Manila, Philippines. The study established an average total transaction time of **6.27 minutes** split across four core stages:
 
@@ -21,7 +21,7 @@ The simulation parameters are calibrated against a real-world time study conduct
 
 ---
 
-## 🌟 Core Features
+##  Core Features
 
 - **Discrete Event Simulation Engine:** Built on a priority queue dispatching events (e.g., `ARRIVAL`, `ORDER_START`, `ORDER_FINISHED`, `PAYMENT_START`, `PAYMENT_FINISHED`, `KITCHEN_START`, `KITCHEN_FINISHED`, `PICKUP_START`, `DEPARTURE`).
 - **Dynamic 2D Canvas Visualization:** Animates vehicle movement in real time through the lane, order speakers, payment windows, kitchen queue, and pickup window.
@@ -42,7 +42,7 @@ The simulation parameters are calibrated against a real-world time study conduct
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 The project is structured as a clean, modular static web application:
 
@@ -71,7 +71,7 @@ The project is structured as a clean, modular static web application:
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 Since `DriveThruDES` is written entirely in Vanilla JS/HTML/CSS without heavy external dependencies, you can run it instantly:
 
@@ -86,7 +86,7 @@ Since `DriveThruDES` is written entirely in Vanilla JS/HTML/CSS without heavy ex
 
 ---
 
-## 🎲 Simulation Engine Details
+##  Simulation Engine Details
 
 ### Probability Distributions
 The simulation uses research-validated random distributions to model real-world variability:
