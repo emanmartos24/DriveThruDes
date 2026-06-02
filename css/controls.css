@@ -1,0 +1,96 @@
+/* ─── Status Dot (header pill) ───────────────────────────────────────────── */
+.dot         { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); }
+.dot.running { background: var(--green); animation: pulse 1.2s infinite; }
+.dot.paused  { background: var(--yellow); }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  flex: 1;
+  min-width: 64px;
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover   { background: var(--bg4); }
+.btn.primary { background: var(--green2); border-color: var(--green); color: white; }
+.btn.warn    { background: rgba(245,200,66,0.10); border-color: rgba(245,200,66,0.35); color: var(--yellow); }
+.btn.danger  { background: rgba(255,79,79,0.11);  border-color: rgba(255,79,79,0.30);  color: var(--red); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ─── Range / Sliders ────────────────────────────────────────────────────── */
+.ctrl-row   { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.ctrl-label { display: flex; justify-content: space-between; color: var(--text2); font-size: 12px; }
+.ctrl-label span, .mono { font-family: Consolas, "IBM Plex Mono", monospace; color: var(--text); }
+
+input[type=range] {
+  width: 100%; height: 4px;
+  appearance: none;
+  border-radius: 3px;
+  background: var(--bg4);
+  outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--green);
+  border: 2px solid var(--bg2);
+  cursor: pointer;
+}
+
+/* ─── Toggle Switch ──────────────────────────────────────────────────────── */
+.toggle-wrap { display: flex; justify-content: space-between; align-items: center; margin-top: 3px; }
+.toggle      { width: 38px; height: 21px; position: relative; display: inline-block; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle span {
+  position: absolute; inset: 0; border-radius: 11px;
+  background: var(--bg4); transition: .2s; cursor: pointer;
+}
+.toggle span:before {
+  content: ""; position: absolute; width: 15px; height: 15px; left: 3px; top: 3px;
+  border-radius: 50%; background: var(--text3); transition: .2s;
+}
+.toggle input:checked + span            { background: var(--green2); }
+.toggle input:checked + span:before    { transform: translateX(17px); background: white; }
+
+/* ─── Preset Buttons ─────────────────────────────────────────────────────── */
+.preset {
+  width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 11px;
+  margin-bottom: 7px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.preset:hover { color: var(--text); border-color: var(--blue); background: var(--bg4); }
+
+/* ─── Tags ───────────────────────────────────────────────────────────────── */
+.tag        { font-size: 10px; border-radius: 5px; padding: 2px 6px; font-weight: 900; }
+.tag.green  { color: var(--green);  background: rgba(34,200,122,.11); }
+.tag.yellow { color: var(--yellow); background: rgba(245,200,66,.11); }
+.tag.red    { color: var(--red);    background: rgba(255,79,79,.11); }
+.tag.blue   { color: var(--blue);   background: rgba(77,159,255,.11); }
+
+/* ─── Info Note ──────────────────────────────────────────────────────────── */
+.note {
+  color: var(--text2);
+  font-size: 11px;
+  line-height: 1.45;
+  background: rgba(255,255,255,.035);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+}

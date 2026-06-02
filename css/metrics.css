@@ -1,0 +1,113 @@
+/* ─── Metric Cards ───────────────────────────────────────────────────────── */
+.metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.metric-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 11px;
+}
+.metric-label { color: var(--text3); font-size: 10px; margin-bottom: 4px; }
+.metric-val {
+  font-family: Consolas, "IBM Plex Mono", monospace;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text);
+}
+.metric-val.green  { color: var(--green); }
+.metric-val.yellow { color: var(--yellow); }
+.metric-val.red    { color: var(--red); }
+.metric-unit       { color: var(--text3); font-size: 10px; margin-top: 3px; }
+
+/* ─── Station Utilization Bars ───────────────────────────────────────────── */
+.util-item { margin-bottom: 8px; }
+.util-top  { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: var(--text2); }
+.util-pct  { font-family: Consolas, monospace; color: var(--text); }
+.util-bar  { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+.util-fill { height: 100%; width: 0%; border-radius: 3px; transition: width .25s; }
+
+/* ─── Bottleneck Alert ───────────────────────────────────────────────────── */
+.bottleneck {
+  display: none;
+  color: var(--red);
+  background: rgba(255,79,79,.09);
+  border: 1px solid rgba(255,79,79,.25);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.bottleneck.visible { display: block; }
+
+/* ─── Mini Charts ────────────────────────────────────────────────────────── */
+.chart-card {
+  position: relative;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.chart-head  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.chart-title { color: var(--text2); font-size: 10px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.chart-now   { color: var(--text); font-family: Consolas, monospace; font-size: 12px; }
+.mini-chart  { width: 100%; height: 96px; display: block; }
+.chart-sub   { color: var(--text3); font-size: 10px; margin: -2px 0 5px; }
+
+/* ─── Chart Hover Tooltip ────────────────────────────────────────────────── */
+.chart-tip {
+  position: fixed;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 20;
+  transform: translate(-50%, -115%);
+  background: #10141d;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  padding: 7px 9px;
+  color: var(--text);
+  font: 11px Consolas, monospace;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  white-space: nowrap;
+}
+
+/* ─── System State Rows ──────────────────────────────────────────────────── */
+.state-row { display: flex; justify-content: space-between; color: var(--text2); font-size: 12px; margin-bottom: 7px; }
+
+/* ─── Event Log ──────────────────────────────────────────────────────────── */
+.event-log {
+  height: 142px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.log-header {
+  height: 34px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 15px; border-bottom: 1px solid var(--border);
+}
+.log-title  { color: var(--text2); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .7px; }
+.log-body   { flex: 1; overflow-y: auto; padding: 6px 15px; }
+.log-entry  { display: flex; gap: 8px; font-family: Consolas, monospace; font-size: 11px; color: var(--text2); margin-bottom: 3px; }
+.log-time   { color: var(--text3); min-width: 44px; }
+.log-entry.arr  .log-msg { color: var(--blue); }
+.log-entry.dep  .log-msg { color: var(--green); }
+.log-entry.warn .log-msg { color: var(--yellow); }
+.log-entry.err  .log-msg { color: var(--red); }
+
+/* ─── Congestion Banner (canvas overlay) ────────────────────────────────── */
+.congestion {
+  display: none;
+  position: absolute;
+  top: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(255,79,79,.14);
+  border: 1px solid rgba(255,79,79,.42);
+  color: var(--red);
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  z-index: 5;
+}
+.congestion.visible { display: block; }

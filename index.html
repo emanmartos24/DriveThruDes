@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drive-Thru DES Research Simulation</title>
+
+  <!-- ── Styles (load order matters) ───────────────────────────── -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/controls.css">
+  <link rel="stylesheet" href="css/metrics.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════════════ -->
+<header>
+  <div class="brand">
+    <div class="brand-icon">DT</div>
+    <div>
+      <div class="brand-title">DriveThru<span>DES</span></div>
+      <div class="brand-sub">Research-calibrated discrete event simulation</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="pill"><span class="dot" id="statusDot"></span><span id="statusText">Idle</span></div>
+    <div class="pill"><span>SIM TIME</span><span class="mono" id="simClock">00:00</span></div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LEFT SIDEBAR – Controls & Presets
+  ═══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar">
+
+    <!-- Simulation Controls -->
+    <div class="section">
+      <div class="section-title">Simulation Controls</div>
+      <div class="btn-row">
+        <button class="btn primary" id="startBtn">Start</button>
+        <button class="btn warn"    id="pauseBtn" disabled>Pause</button>
+        <button class="btn danger"  id="resetBtn">Reset</button>
+      </div>
+      <div class="ctrl-row" style="margin-top:12px;">
+        <div class="ctrl-label">Sim Speed <span id="speedVal">1x</span></div>
+        <input id="speed" type="range" min="1" max="10" step="1" value="1">
+      </div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Random Seed <span id="seedVal">375</span></div>
+        <input id="seed" type="range" min="1" max="999" step="1" value="375">
+      </div>
+    </div>
+
+    <!-- Demand -->
+    <div class="section">
+      <div class="section-title">Demand</div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Vehicles/hour <span id="arrivalVal">18</span></div>
+        <input id="arrivalRate" type="range" min="4" max="60" step="1" value="18">
+      </div>
+      <div class="toggle-wrap">
+        <span class="ctrl-label">Peak Hour Multiplier</span>
+        <label class="toggle"><input id="peakMode" type="checkbox"><span></span></label>
+      </div>
+    </div>
+
+    <!-- Configuration -->
+    <div class="section">
+      <div class="section-title">Configuration</div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Order Stations <span id="orderCapVal">1</span></div>
+        <input id="orderCap" type="range" min="1" max="3" step="1" value="1">
+      </div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Kitchen Crew <span id="kitchenCapVal">1</span></div>
+        <input id="kitchenCap" type="range" min="1" max="4" step="1" value="1">
+      </div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Waiting Queue Cap <span id="queueCapVal">10</span></div>
+        <input id="queueCap" type="range" min="4" max="24" step="1" value="10">
+      </div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">Service Scale <span id="serviceScaleVal">100%</span></div>
+        <input id="serviceScale" type="range" min="60" max="160" step="5" value="100">
+      </div>
+    </div>
+
+    <!-- Scenario Presets -->
+    <div class="section">
+      <div class="section-title">Scenario Presets</div>
+      <button class="preset" data-preset="baseline">Current Layout    <span class="tag yellow">6.27 MIN</span></button>
+      <button class="preset" data-preset="peak">    Lunch Rush        <span class="tag red">PEAK</span></button>
+      <button class="preset" data-preset="overload"> Overloaded       <span class="tag red">CRITICAL</span></button>
+      <button class="preset" data-preset="optimized">Improved Layout  <span class="tag blue">3.57 MIN</span></button>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MAIN – Canvas + Event Log
+  ═══════════════════════════════════════════════════════════ -->
+  <main class="main">
+    <div class="canvas-area" id="canvasArea">
+      <div class="congestion" id="congestionWarn">QUEUE CONGESTION DETECTED</div>
+      <canvas id="simCanvas"></canvas>
+    </div>
+    <div class="event-log">
+      <div class="log-header">
+        <span class="log-title">Event Log</span>
+        <button class="btn" style="flex:0;min-width:60px;padding:4px 10px;" id="clearLog">Clear</button>
+      </div>
+      <div class="log-body" id="logBody"></div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       RIGHT PANEL – Metrics, Charts, System State
+  ═══════════════════════════════════════════════════════════ -->
+  <aside class="right-panel">
+
+    <!-- Live Metrics -->
+    <div class="panel-block">
+      <div class="panel-title">Live Metrics</div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-label">Avg Cycle</div>    <div class="metric-val" id="mCycle">0.0</div>       <div class="metric-unit">minutes</div></div>
+        <div class="metric-card"><div class="metric-label">Avg Wait</div>     <div class="metric-val" id="mWait">0.0</div>        <div class="metric-unit">minutes</div></div>
+        <div class="metric-card"><div class="metric-label">Queue Length</div> <div class="metric-val" id="mQueue">0</div>         <div class="metric-unit">vehicles</div></div>
+        <div class="metric-card"><div class="metric-label">Served</div>       <div class="metric-val green" id="mServed">0</div>  <div class="metric-unit">total</div></div>
+        <div class="metric-card"><div class="metric-label">Throughput</div>   <div class="metric-val" id="mThroughput">0</div>    <div class="metric-unit">cars/hour</div></div>
+        <div class="metric-card"><div class="metric-label">Long Delays</div>  <div class="metric-val yellow" id="mLong">0</div>   <div class="metric-unit">&gt; 8 min</div></div>
+      </div>
+    </div>
+
+    <!-- Station Utilisation -->
+    <div class="panel-block">
+      <div class="panel-title">Station Utilization</div>
+      <div class="util-item"><div class="util-top"><span>Order Station</span>  <span class="util-pct" id="uOrder">0%</span></div>   <div class="util-bar"><div class="util-fill" id="uOrderBar"   style="background:var(--blue)"></div></div></div>
+      <div class="util-item"><div class="util-top"><span>Payment Window</span> <span class="util-pct" id="uPay">0%</span></div>     <div class="util-bar"><div class="util-fill" id="uPayBar"     style="background:var(--purple)"></div></div></div>
+      <div class="util-item"><div class="util-top"><span>Kitchen</span>        <span class="util-pct" id="uKitchen">0%</span></div> <div class="util-bar"><div class="util-fill" id="uKitchenBar" style="background:var(--green)"></div></div></div>
+      <div class="util-item"><div class="util-top"><span>Pickup Window</span>  <span class="util-pct" id="uPickup">0%</span></div>  <div class="util-bar"><div class="util-fill" id="uPickupBar"  style="background:var(--orange)"></div></div></div>
+    </div>
+
+    <!-- Bottleneck Alert -->
+    <div class="panel-block bottleneck" id="bottleneckCard">
+      <strong>Bottleneck Detected</strong>
+      <div id="bottleneckText" style="margin-top:4px;color:#ffb4b4;"></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Queue History</span><span class="chart-now" id="queueNow">0 cars</span></div>
+      <div class="chart-sub">vehicles waiting to order; red line = capacity</div>
+      <canvas class="mini-chart" id="queueChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Cycle Time Trend</span><span class="chart-now" id="cycleNow">0.0 min</span></div>
+      <div class="chart-sub">average total time in system; green line = 6.27 min study target</div>
+      <canvas class="mini-chart" id="cycleChart"></canvas>
+    </div>
+    <div class="chart-tip" id="chartTip"></div>
+
+    <!-- System State -->
+    <div class="panel-block">
+      <div class="panel-title">System State</div>
+      <div class="state-row"><span>In system</span>         <span class="mono" id="mInSystem">0</span></div>
+      <div class="state-row"><span>Peak queue</span>        <span class="mono" id="mPeakQueue">0</span></div>
+      <div class="state-row"><span>Events processed</span> <span class="mono" id="mEvents">0</span></div>
+      <div class="state-row"><span>Scenario</span>         <span class="mono" id="mScenario">Baseline</span></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- ── Scripts (dependency order) ─────────────────────────────────── -->
+<!--
+  Load order is important because later files depend on earlier ones:
+  main.js defines $ and the load handler, so it must come last.
+-->
+<script src="js/main.js"></script>       <!-- $ helper + window.load bootstrap -->
+<script src="js/scenarios.js"></script>  <!-- SCENARIOS data constant           -->
+<script src="js/state.js"></script>      <!-- sim object, resetStats, initResources -->
+<script src="js/rng.js"></script>        <!-- makeRng, expRand, triRand, serviceTime, arrivalInterval -->
+<script src="js/logger.js"></script>     <!-- log()                             -->
+<script src="js/layout.js"></script>     <!-- canvas, ctx, layout, resize, makeCar, positionQueues  -->
+<script src="js/events.js"></script>     <!-- schedule, processEvents, handleEvent, arrival…         -->
+<script src="js/simulation.js"></script> <!-- loop, start, pause, reset         -->
+<script src="js/renderer.js"></script>   <!-- draw, drawRoad, drawCar…          -->
+<script src="js/charts.js"></script>     <!-- drawCharts, drawMiniChart, bindChartHover              -->
+<script src="js/metrics.js"></script>    <!-- updateMetrics, setUtil, updateWarnings                 -->
+<script src="js/ui.js"></script>         <!-- bind, applyScenario               -->
+
+</body>
+</html>
