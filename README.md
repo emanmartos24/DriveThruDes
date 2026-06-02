@@ -16,7 +16,7 @@ The simulation parameters are calibrated against a real-world time study conduct
 | **Claiming / Pickup** | 0.33 min | 5.3% | Food is handed to the customer at the final window. |
 | **TOTAL** | **6.27 min** | **100.0%** | Average total time spent in the drive-thru system. |
 
-> [!IMPORTANT]
+> !IMPORTANT
 > **Key Operational Insight:** The **Waiting for Order (Kitchen)** phase is the primary bottleneck. Because drive-thrus operate as a single-line vehicle stream, a single complex order stalls all upstream customers, causing cascading delays.
 
 ---
