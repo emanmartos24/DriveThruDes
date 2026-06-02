@@ -84,9 +84,10 @@ function drawMiniChart(context, cvs, data, color, maxY, mode, target, unit) {
     context.setLineDash([]);
     context.fillStyle = unit === "cars" ? "#ff8f8f" : "#8ff0bd";
     context.font = "10px Consolas, monospace"; context.textAlign = "right";
+    const textY = y < top + 12 ? y + 12 : y - 4;
     context.fillText(
       unit === "cars" ? "cap " + target : "target " + target.toFixed(2),
-      w - 4, y - 4);
+      w - 4, textY);
   }
 
   // Data series

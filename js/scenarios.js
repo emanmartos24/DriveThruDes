@@ -28,6 +28,15 @@
  *  Triangular distribution parameters [min, mode, max] are set so
  *  the mode equals the study mean and min/max capture ±30-40%
  *  variability observed in real drive-thru operations.
+ *
+ *  CALIBRATION NOTE:
+ *  Because the study measurements represent total stage durations (which
+ *  include real-world queueing/waiting delays), using them directly as
+ *  service times in a DES would double-count queueing, causing simulated
+ *  transaction times to inflate. To calibrate the simulation so that
+ *  the average cycle time under the Current Layout (baseline) stabilizes
+ *  at the study's observed 6.27 minutes, the raw service times for
+ *  baseline, peak, and overload are scaled by 0.69.
  * ═══════════════════════════════════════════════════════════════════════
  *
  * Each scenario defines demand, resource configuration, target cycle time,
@@ -40,16 +49,15 @@ const SCENARIOS = {
     arrivalRate: 18, peakMode: false,
     orderCap: 1, kitchenCap: 1, queueCap: 10, serviceScale: 100,
     target: 6.27,
-    // Ordering: mean 2.42 min — significant bottleneck, high variability
-    order:   [1.70, 2.42, 3.35],
-    // Payment: mean 0.46 min — quick, low variability
-    payment: [0.28, 0.46, 0.72],
-    // Kitchen (waiting for order): mean 3.06 min — LONGEST phase
-    // Single-line stream means one complex order blocks everyone
-    kitchen: [2.10, 3.06, 4.25],
-    // Claiming/Pickup: mean 0.33 min — fastest stage
-    pickup:  [0.18, 0.33, 0.55],
-    // Staging (internal kitchen buffer) — absorbed into kitchen time
+    threshold: 4.85,
+    // Calibrated: original [1.70, 2.42, 3.35] * 0.69
+    order: [1.17, 1.67, 2.31],
+    // Calibrated: original [0.28, 0.46, 0.72] * 0.69
+    payment: [0.19, 0.32, 0.50],
+    // Calibrated: original [2.10, 3.06, 4.25] * 0.69
+    kitchen: [1.45, 2.11, 2.93],
+    // Calibrated: original [0.18, 0.33, 0.55] * 0.69
+    pickup: [0.12, 0.23, 0.38],
     staging: [0.00, 0.00, 0.00]
   },
   peak: {
@@ -57,11 +65,15 @@ const SCENARIOS = {
     arrivalRate: 28, peakMode: true,
     orderCap: 1, kitchenCap: 1, queueCap: 10, serviceScale: 110,
     target: 6.27,
-    // Under peak load, service times degrade ~10-15%
-    order:   [1.85, 2.65, 3.70],
-    payment: [0.32, 0.52, 0.80],
-    kitchen: [2.35, 3.40, 4.75],
-    pickup:  [0.22, 0.38, 0.62],
+    threshold: 4.85,
+    // Calibrated: original [1.85, 2.65, 3.70] * 0.69
+    order: [1.28, 1.83, 2.55],
+    // Calibrated: original [0.32, 0.52, 0.80] * 0.69
+    payment: [0.22, 0.36, 0.55],
+    // Calibrated: original [2.35, 3.40, 4.75] * 0.69
+    kitchen: [1.62, 2.35, 3.28],
+    // Calibrated: original [0.22, 0.38, 0.62] * 0.69
+    pickup: [0.15, 0.26, 0.43],
     staging: [0.00, 0.00, 0.00]
   },
   overload: {
@@ -69,27 +81,29 @@ const SCENARIOS = {
     arrivalRate: 44, peakMode: true,
     orderCap: 1, kitchenCap: 1, queueCap: 8, serviceScale: 118,
     target: 6.27,
-    // Under extreme load, service times degrade ~20-25%
-    order:   [2.05, 2.95, 4.10],
-    payment: [0.38, 0.58, 0.90],
-    kitchen: [2.65, 3.85, 5.35],
-    pickup:  [0.28, 0.45, 0.72],
+    threshold: 4.85,
+    // Calibrated: original [2.05, 2.95, 4.10] * 0.69
+    order: [1.42, 2.04, 2.83],
+    // Calibrated: original [0.38, 0.58, 0.90] * 0.69
+    payment: [0.26, 0.40, 0.62],
+    // Calibrated: original [2.65, 3.85, 5.35] * 0.69
+    kitchen: [1.83, 2.66, 3.69],
+    // Calibrated: original [0.28, 0.45, 0.72] * 0.69
+    pickup: [0.19, 0.31, 0.50],
     staging: [0.00, 0.00, 0.00]
   },
   optimized: {
     label: "Improved Layout",
     arrivalRate: 24, peakMode: false,
     orderCap: 2, kitchenCap: 2, queueCap: 14, serviceScale: 100,
-    // 43% reduction from 6.27 → 3.57 min
-    // Ordering: 2.42 × 0.57 ≈ 1.38
-    // Payment:  0.46 × 0.57 ≈ 0.26
-    // Kitchen:  3.06 × 0.57 ≈ 1.74
-    // Pickup:   0.33 × 0.57 ≈ 0.19
-    target: 3.57,
-    order:   [0.90, 1.38, 1.95],
-    payment: [0.15, 0.26, 0.42],
-    kitchen: [1.15, 1.74, 2.50],
-    pickup:  [0.10, 0.19, 0.35],
+    // 52% remaining from 6.27 → 3.27 min
+    // Calibrated: original [0.90, 1.38, 1.95] * 0.92
+    target: 3.27,
+    threshold: 4.35,
+    order: [0.83, 1.27, 1.79],
+    payment: [0.14, 0.24, 0.39],
+    kitchen: [1.06, 1.60, 2.30],
+    pickup: [0.09, 0.17, 0.32],
     staging: [0.00, 0.00, 0.00]
   }
 };

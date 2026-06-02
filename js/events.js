@@ -192,7 +192,8 @@ function finishPickup(car) {
   sim.stats.served++;
   sim.stats.totalCycle += cycle;
   sim.stats.totalWait  += car.wait;
-  if (cycle > 8) sim.stats.longDelays++;
+  const thresh = scenario().threshold || 8.0;
+  if (cycle > thresh) sim.stats.longDelays++;
 
   // Per-stage time breakdown
   const tOrder   = (car.orderEnd   !== null && car.orderStart   !== null) ? (car.orderEnd   - car.orderStart)   : 0;

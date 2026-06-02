@@ -38,7 +38,7 @@ The simulation parameters are calibrated against a real-world time study conduct
   - **Current Layout (Baseline):** The default calibrated layout (1 Order Station, 1 Kitchen Crew) resulting in a ~6.27 min cycle.
   - **Lunch Rush:** Higher arrival rate (28 cars/hour) and service degradation.
   - **Overloaded:** Extreme demand (44 cars/hour) leading to critical delays.
-  - **Improved Layout (Optimized):** 2 Order Stations and 2 Kitchen Crews, reducing the average cycle time by ~43% to 3.57 minutes.
+  - **Improved Layout (Optimized):** 2 Order Stations and 2 Kitchen Crews, reducing the average cycle time by ~48% to 3.27 minutes.
 
 ---
 

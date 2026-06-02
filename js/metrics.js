@@ -19,6 +19,8 @@ function updateMetrics() {
   $("mServed").textContent     = sim.stats.served;
   $("mThroughput").textContent = Math.round(throughput);
   $("mLong").textContent       = sim.stats.longDelays;
+  const thresh = scenario().threshold || 8.0;
+  $("mLongUnit").textContent   = `> ${thresh.toFixed(2)} min`;
   $("mInSystem").textContent   = totalInSystem();
   $("mPeakQueue").textContent  = sim.stats.peakQueue;
   $("mEvents").textContent     = sim.stats.events;
